@@ -7,11 +7,21 @@ mod routes;
 mod schema;
 
 use dotenvy::dotenv;
+use env_logger::Env;
 use ntex::web::middleware::Logger;
 use ntex::web::{App, HttpServer};
+use std::env;
 use std::io::Result;
 
-use env_logger::Env;
+fn get_host_address() -> (String, u16) {
+    let host = env::var("HOST").unwrap_or_else(|_| "127.0.0.1".to_string());
+    let port: u16 = env::var("PORT")
+        .unwrap_or_else(|_| 8000.to_string())
+        .parse::<u16>()
+        .unwrap_or_else(|_| 8000);
+
+    return (host, port);
+}
 
 #[ntex::main]
 async fn main() -> Result<()> {
@@ -26,7 +36,7 @@ async fn main() -> Result<()> {
             .wrap(Logger::default())
             .configure(routes::configure)
     })
-    .bind(("127.0.0.1", 8080))?
+    .bind(get_host_address())?
     .run()
     .await
 }

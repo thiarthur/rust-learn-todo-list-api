@@ -22,41 +22,40 @@ To get started with this project, ensure you have Rust and Cargo installed. Foll
 
 ### Installation
 
-1. Clone the repository:
+1.  Clone the repository:
 
     ```bash
     git clone git@github.com:thiarthur/rust-learn-todo-list-api.git
     ```
 
-2. Change to the project directory:
+2.  Change to the project directory:
 
     ```bash
     cd rust-learn-todo-list-api
     ```
 
-3. Set up the `.env` file for environment variables:
+3.  Set up the `.env` file for environment variables:
 
-    - Create a `.env` file in the project root.
-    - Add the `DATABASE_URL` for connecting to your PostgreSQL database.
+    -   Create a `.env` file in the project root.
+    -   Add the `DATABASE_URL` for connecting to your PostgreSQL database.
+    -   **Optional:**
+        -   Add the `PORT` to change de running API port (default: 8000).
+        -   Add the `HOST` to change de running API port (default: "127.0.0.1").
 
-    ```bash
-    echo "DATABASE_URL=postgres://username:password@localhost/task_manager_db" > .env
-    ```
-
-4. Set up Diesel with the correct database schema:
+4.  Set up Diesel with the correct database schema:
 
     ```bash
     cargo install diesel_cli --no-default-features --features postgres
     diesel migration run
     ```
 
-5. Build the project with Cargo:
+5.  Build the project with Cargo:
 
     ```bash
     cargo build
     ```
 
-6. Run the project:
+6.  Run the project:
 
     ```bash
     cargo run

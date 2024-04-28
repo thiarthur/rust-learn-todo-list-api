@@ -10,9 +10,6 @@ This is a command-line task manager written in Rust. It allows users to create, 
 -   List all tasks with their details
 -   Edit existing tasks
 -   Clear console and display menu options
-
-## TODO Features
-
 -   Remove tasks by id
 
 ## Getting Started
@@ -73,6 +70,7 @@ After running the project, you can interact with the REST API to create, list, e
 -   `GET /tasks` to list all tasks.
 -   `POST /tasks` to create a new task (send JSON with `title` and `description`).
 -   `PUT /tasks/{task_id}` to update an existing task.
+-   `DELETE /tasks/{task_id}` to delete an existing task.
 
 ## Contributing
 

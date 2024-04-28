@@ -49,3 +49,9 @@ pub fn update_task(
         .get_result(conn)
         .optional()?);
 }
+
+pub fn delete_task(task_id: i32, conn: &mut PgConnection) -> Result<usize, diesel::result::Error> {
+    use crate::schema::tasks::dsl::*;
+
+    return Ok(diesel::delete(tasks.filter(id.eq(task_id))).execute(conn)?);
+}

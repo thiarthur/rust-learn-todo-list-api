@@ -2,9 +2,9 @@ mod controller;
 mod db;
 mod error;
 mod model;
+mod response;
 mod routes;
 mod schema;
-
 use dotenvy::dotenv;
 use ntex::web::{App, HttpServer};
 use std::io::Result;

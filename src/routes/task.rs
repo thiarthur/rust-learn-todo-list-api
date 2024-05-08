@@ -2,7 +2,7 @@ use ntex::web::{self, Error, HttpResponse};
 
 use crate::controller::task::{create_task, delete_task, find_task_by_id, list_tasks, update_task};
 use crate::db::DbPool;
-use crate::error::{create_internal_error, NotFoundError};
+use crate::error::ApplicationError;
 use crate::model::task::NewTask;
 use crate::response::SuccessResponse;
 use web::types::{Json, Path, State};
@@ -18,9 +18,11 @@ async fn get_task_route(pool: State<DbPool>, task_id: Path<i32>) -> Result<HttpR
         return Ok(HttpResponse::Ok().json(&task));
     }
 
-    Err(create_internal_error(NotFoundError {
+    Err(ApplicationError {
         message: format!("No task found with id: {}", task_id),
-    }))
+        status: 400,
+    }
+    .into())
 }
 
 #[web::get("/tasks")]
@@ -57,9 +59,11 @@ async fn update_task_route(
         return Ok(HttpResponse::Ok().json(&task));
     }
 
-    Err(create_internal_error(NotFoundError {
+    Err(ApplicationError {
         message: format!("No task found with id: {}", task_id),
-    }))
+        status: 400,
+    }
+    .into())
 }
 
 #[web::delete("/tasks/{task_id}")]
@@ -73,7 +77,9 @@ async fn delete_task_route(pool: State<DbPool>, task_id: Path<i32>) -> Result<Ht
         return Ok(HttpResponse::Ok().json(&SuccessResponse { success: true }));
     }
 
-    Err(create_internal_error(NotFoundError {
+    Err(ApplicationError {
         message: format!("No task found with id: {}", task_id),
-    }))
+        status: 400,
+    }
+    .into())
 }

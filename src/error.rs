@@ -1,45 +1,25 @@
-use derive_more::{Display, Error}; // Ensure derive_more is imported
-use ntex::web;
-use ntex::web::HttpResponse;
+use ntex::http::StatusCode;
+use ntex::web::{self, HttpRequest, WebResponseError};
 use serde::Serialize;
-use std::fmt::{Debug, Display};
-use web::error::{InternalError, WebResponseError};
+use serde_json::{json, to_string_pretty};
+use std::fmt::{Display, Formatter, Result as FmtResult};
 
-pub trait ApplicationErrorTrait {
-    fn to_http_response(&self) -> HttpResponse;
-}
-
-#[derive(Debug, Display, Error, Serialize, Clone)]
-#[display(fmt = "Error: {}", message)]
-pub struct NotFoundError {
+#[derive(Debug, Serialize)]
+pub struct ApplicationError {
     pub message: String,
+    pub status: u16,
 }
 
-impl ApplicationErrorTrait for NotFoundError {
-    fn to_http_response(&self) -> HttpResponse {
-        HttpResponse::NotFound().json(self) // Return 404 with the error message
+impl Display for ApplicationError {
+    fn fmt(&self, f: &mut Formatter) -> FmtResult {
+        write!(f, "{}", to_string_pretty(self).unwrap())
     }
 }
 
-impl WebResponseError for NotFoundError {}
-
-#[derive(Debug, Display, Error, Serialize, Clone)]
-#[display(fmt = "Error: {}", message)]
-pub struct SerializationError {
-    pub message: String,
-}
-
-impl ApplicationErrorTrait for SerializationError {
-    fn to_http_response(&self) -> HttpResponse {
-        HttpResponse::BadRequest().json(self)
+impl WebResponseError for ApplicationError {
+    // builds the actual response to send back when an error occurs
+    fn error_response(&self, _: &HttpRequest) -> web::HttpResponse {
+        let err_json = json!({ "message": self.message });
+        web::HttpResponse::build(StatusCode::from_u16(self.status).unwrap()).json(&err_json)
     }
-}
-
-impl WebResponseError for SerializationError {}
-
-pub fn create_internal_error<T>(e: T) -> web::Error
-where
-    T: ApplicationErrorTrait + Debug + Display + 'static + Clone,
-{
-    InternalError::from_response(e.clone(), e.to_http_response()).into()
 }
